@@ -124,6 +124,10 @@ int db_connect(db_conn_t *conn)
                    "ERROR: failed to create MySQL client struct");
         return DB_CONNECT_FAILED;
     }
+    
+    my_bool enforce_tls = 1;
+    mysql_options(conn, MYSQL_OPT_SSL_ENFORCE, &enforce_tls);
+
 #if (MYSQL_VERSION_ID >= 50013)
     /* set auto-reconnect option */
     mysql_options(conn, MYSQL_OPT_RECONNECT, &reconnect);
