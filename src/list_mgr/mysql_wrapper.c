@@ -464,7 +464,7 @@ int db_check_component(db_conn_t *conn, db_object_e obj_type, const char *name,
                     rc = DB_BAD_SCHEMA;
                 else
                     rc = DB_SUCCESS;
-            } else if (strcmp(arg, row[0])) {
+            } else if (strcasecmp(arg, row[0])) {
                 DisplayLog(LVL_CRIT, LISTMGR_TAG,
                            "Trigger %s is on wrong table: expected %s, got %s",
                            name, arg, row[0]);
