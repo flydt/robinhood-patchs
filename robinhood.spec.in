@@ -167,7 +167,7 @@ This RPM provides an admin/config helper for Robinhood PolicyEngine (command rbh
 Summary: Web interface to vizualize filesystems stats
 Group: Applications/System
 Release: @RELEASE@
-Requires: php, php-pdo, php-mysql
+Requires: php, php-mysqlnd, php-xml, php-pdo, php-gd, php-json
 
 %description webgui
 Web interface to vizualize filesystems stats.
