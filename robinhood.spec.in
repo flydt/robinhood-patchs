@@ -11,7 +11,7 @@
 	# default ON
 	%bcond_without lhsm
 	%bcond_without backup
-        %global fsname
+        %global fsname -lustre
 %else
 	%global lswitch --disable-lustre
 	# default OFF
