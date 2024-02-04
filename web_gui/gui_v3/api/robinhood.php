@@ -329,6 +329,27 @@ class MyAPI extends API
                     return "Permission denied";
             }
 
+            $getFullPath = function($entryId,$db,$CURRENT_DB) {
+               $query = "
+                   WITH RECURSIVE cte AS (
+                      SELECT id, parent_id, name, 1 as level 
+                      FROM NAMES 
+                      WHERE id = :entryId
+                      UNION ALL
+                      SELECT n.id, n.parent_id, n.name, cte.level + 1 as level 
+                      FROM NAMES n 
+                      JOIN cte ON n.id = cte.parent_id
+                    )
+                    SELECT GROUP_CONCAT(name ORDER BY level DESC SEPARATOR '/') AS full_path 
+                    FROM cte LIMIT 100000000000000
+               ";
+ 
+               $req_path = $db[$CURRENT_DB]->prepare($query);
+               $req_path->execute(['entryId' => $entryId]);
+               $result = $req_path->fetch(PDO::FETCH_ASSOC);
+               return $result['full_path'];
+            };
+
             $content_requested = $this->verb;
             $data = array();
             $columns = array();
@@ -383,7 +404,7 @@ class MyAPI extends API
                     $offset=intval($fullfilter[1]['k_offset']);
                     unset($fullfilter[1]['k_offset']);
                 }
-                $req = $db[$CURRENT_DB]->prepare("SELECT uid, gid, size, blocks, name, type, from_unixtime(creation_time) AS creation_time".
+                $req = $db[$CURRENT_DB]->prepare("SELECT ENTRIES.id, uid, gid, size, blocks, name, type, from_unixtime(creation_time) AS creation_time".
                     ", from_unixtime(last_access) AS last_access, from_unixtime(last_mod) AS last_mod".
                     " FROM ENTRIES LEFT JOIN NAMES ON ENTRIES.id = NAMES.id $sqlfilter LIMIT $MAX_ROWS OFFSET $offset");
                 $req->execute($fullfilter[1]);
@@ -398,12 +419,16 @@ class MyAPI extends API
                 $columns[] = array('title' => 'creation_time');
                 $columns[] = array('title' => 'last_access');
                 $columns[] = array('title' => 'last_mod');
+                $columns[] = array('title' => 'full_path');
                 $columnsDefs[] = array('type' => 'file-size', 'targets' => 3);
                 $count = $req->rowCount();
                 $data['limited'] = ($count == $MAX_ROWS) ? $MAX_ROWS : false;
                 $data['offset'] = $offset;
                 while($sqldata = $req->fetch(PDO::FETCH_ASSOC)) {
-
+                    $entryId = $sqldata['id'];
+                    unset($sqldata['id']); // remove 'id' from $sqldata
+                    $fullPath = $getFullPath($entryId,$db,$CURRENT_DB);
+                    $sqldata['full_path'] = $fullPath;
                     $datasets[] = array_values($sqldata);
                 }
                 break;
