@@ -412,7 +412,7 @@ class MyAPI extends API
                 //we should autorize the user to see his own files
                 $columns[] = array('title' => 'uid');
                 $columns[] = array('title' => 'gid');
-                $columns[] = array('title' => 'size');
+                $columns[] = array('title' => 'size, MB');
                 $columns[] = array('title' => 'blocks');
                 $columns[] = array('title' => 'name');
                 $columns[] = array('title' => 'type');
@@ -429,6 +429,7 @@ class MyAPI extends API
                     unset($sqldata['id']); // remove 'id' from $sqldata
                     $fullPath = $getFullPath($entryId,$db,$CURRENT_DB);
                     $sqldata['full_path'] = $fullPath;
+		    $sqldata['size'] = round($sqldata['size'] / 1024 / 1024, 2);
                     $datasets[] = array_values($sqldata);
                 }
                 break;
