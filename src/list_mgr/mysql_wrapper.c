@@ -125,7 +125,7 @@ int db_connect(db_conn_t *conn)
         return DB_CONNECT_FAILED;
     }
     
-    uint enforce_tls = SSL_MODE_DISABLED;
+    uint enforce_tls = SSL_MODE_REQUIRED;
     mysql_options(conn, MYSQL_OPT_SSL_MODE, &enforce_tls);
 
 #if (MYSQL_VERSION_ID >= 50013)
