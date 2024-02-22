@@ -125,8 +125,8 @@ int db_connect(db_conn_t *conn)
         return DB_CONNECT_FAILED;
     }
     
-    my_bool enforce_tls = 1;
-    mysql_options(conn, MYSQL_OPT_SSL_ENFORCE, &enforce_tls);
+    uint enforce_tls = SSL_MODE_DISABLED;
+    mysql_options(conn, MYSQL_OPT_SSL_MODE, &enforce_tls);
 
 #if (MYSQL_VERSION_ID >= 50013)
     /* set auto-reconnect option */
