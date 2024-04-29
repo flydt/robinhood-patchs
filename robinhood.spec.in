@@ -292,7 +292,7 @@ install -m 444 scripts/robinhood@.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood%
 %endif
 
 
-%else # with_systemd
+%else
 mkdir -p $RPM_BUILD_ROOT/%{_initrddir}
 
 %if %{defined suse_version}
@@ -333,7 +333,7 @@ if [ "$1" = 0 ]; then
     fi
   fi
 fi
-%endif # with_systemd
+%endif
 
 %if %{with lustre}
 %postun lustre
