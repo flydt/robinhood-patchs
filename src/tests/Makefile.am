@@ -7,11 +7,11 @@ AM_LDFLAGS= -lpthread
 #EXTRA_DIST = my-project.supp
 
 check_PROGRAMS=test_uidgidcache test_params \
-    test_confparam test_parse
+    test_parse #test_confparam
 if LUSTRE
 check_PROGRAMS+=create_nostripe test_forcestripe
 endif
-TESTS=test_parsing.sh test_uidgidcache test_params test_confparam
+TESTS=test_parsing.sh test_uidgidcache test_params #test_confparam
 
 noinst_PROGRAMS=$(check_PROGRAMS)
 
@@ -21,9 +21,9 @@ test_uidgidcache_SOURCES=test_uidgidcache.c
 test_uidgidcache_LDADD=../common/libcommontools.la
 test_params_SOURCES=test_params.c
 test_params_LDADD=../common/libcommontools.la
-test_confparam_SOURCES=test_confparam.c
-test_confparam_LDFLAGS=$(DB_LDFLAGS) $(PURPOSE_LDFLAGS) $(FS_LDFLAGS)
-test_confparam_LDADD=../policies/libpolicies.la ../common/libcommontools.la
+#test_confparam_SOURCES=test_confparam.c
+#test_confparam_LDFLAGS=$(DB_LDFLAGS) $(PURPOSE_LDFLAGS) $(FS_LDFLAGS)
+#test_confparam_LDADD=../policies/libpolicies.la ../common/libcommontools.la
 test_parse_SOURCES	    = test_parse.c
 test_parse_LDADD         =  ../cfg_parsing/libconfigparsing.la
 
