@@ -83,10 +83,10 @@ BuildRequires: systemd
 %endif
 %endif
 %if %{with lustre}
-%if %{defined lversion}
-BuildRequires: %{lpackage} >= %{lversion}
-%else
-BuildRequires: %{lpackage}
+#%if %{defined lversion}
+#BuildRequires: %{lpackage} >= %{lversion}
+#%else
+#BuildRequires: %{lpackage}
 %endif
 %endif
 %if %{with mysql}
@@ -113,16 +113,20 @@ With support for: %{?with_lustre:Lustre} %{?with_backup:Backup} %{?with_shook:sh
 
 Summary: Robinhood Policy Engine for Lustre filesystems
 Group: Applications/System
-%if %{defined lversion}
-Requires: %{lpackage} >= %{lversion}
-%else
-Requires: %{lpackage}
-%endif
+#%if %{defined lversion}
+#Requires: %{lpackage} >= %{lversion}
+#%else
+#Requires: %{lpackage}
+#%endif
 #Conflicts: robinhood-posix
 Provides: robinhood = %{version}-%{release}
 Obsoletes: robinhood-tmpfs < 3.0, robinhood-tmpfs-lustre < 3.0
 Obsoletes: robinhood-backup < 3.0, robinhood-lhsm < 3.0
+%if ( 0%{?rhel} >= 9 )
+Requires: s-nail
+%else
 Requires: mailx
+%endif
 %if %{with jemalloc}
 Requires: jemalloc
 %endif
@@ -143,7 +147,11 @@ Group: Applications/System
 #Conflicts: robinhood-lustre
 Provides: robinhood = %{version}-%{release}
 Obsoletes: robinhood-tmpfs < 3.0, robinhood-tmpfs-posix < 3.0
+%if ( 0%{?rhel} >= 9 )
+Requires: s-nail
+%else
 Requires: mailx
+%endif
 %if %{with jemalloc}
 Requires: jemalloc
 %endif
