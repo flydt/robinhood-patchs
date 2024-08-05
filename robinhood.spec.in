@@ -11,11 +11,13 @@
 	# default ON
 	%bcond_without lhsm
 	%bcond_without backup
+        %global fsname -lustre
 %else
 	%global lswitch --disable-lustre
 	# default OFF
 	%bcond_with lhsm
 	%bcond_with backup
+        %global fsname -posix
 %endif
 
 # default OFF
@@ -81,10 +83,10 @@ BuildRequires: systemd
 %endif
 %endif
 %if %{with lustre}
-%if %{defined lversion}
-BuildRequires: %{lpackage} >= %{lversion}
-%else
-BuildRequires: %{lpackage}
+#%if %{defined lversion}
+#BuildRequires: %{lpackage} >= %{lversion}
+#%else
+#BuildRequires: %{lpackage}
 %endif
 %endif
 %if %{with mysql}
@@ -111,16 +113,20 @@ With support for: %{?with_lustre:Lustre} %{?with_backup:Backup} %{?with_shook:sh
 
 Summary: Robinhood Policy Engine for Lustre filesystems
 Group: Applications/System
-%if %{defined lversion}
-Requires: %{lpackage} >= %{lversion}
-%else
-Requires: %{lpackage}
-%endif
-Conflicts: robinhood-posix
+#%if %{defined lversion}
+#Requires: %{lpackage} >= %{lversion}
+#%else
+#Requires: %{lpackage}
+#%endif
+#Conflicts: robinhood-posix
 Provides: robinhood = %{version}-%{release}
 Obsoletes: robinhood-tmpfs < 3.0, robinhood-tmpfs-lustre < 3.0
 Obsoletes: robinhood-backup < 3.0, robinhood-lhsm < 3.0
+%if ( 0%{?rhel} >= 9 )
+Requires: s-nail
+%else
 Requires: mailx
+%endif
 %if %{with jemalloc}
 Requires: jemalloc
 %endif
@@ -138,10 +144,14 @@ Policy engine for Lustre filesystems.
 
 Summary: Robinhood Policy engine for POSIX filesystems
 Group: Applications/System
-Conflicts: robinhood-lustre
+#Conflicts: robinhood-lustre
 Provides: robinhood = %{version}-%{release}
 Obsoletes: robinhood-tmpfs < 3.0, robinhood-tmpfs-posix < 3.0
+%if ( 0%{?rhel} >= 9 )
+Requires: s-nail
+%else
 Requires: mailx
+%endif
 %if %{with jemalloc}
 Requires: jemalloc
 %endif
@@ -261,8 +271,8 @@ cp -a doc/templates $RPM_BUILD_ROOT/%{_datadir}/robinhood/doc
 
 %if %{with_systemd}
 mkdir -p  $RPM_BUILD_ROOT/%{_unitdir}
-install -m 444 scripts/robinhood.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood.service
-install -m 444 scripts/robinhood@.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood@.service
+install -m 444 scripts/robinhood.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood%{fsname}.service
+install -m 444 scripts/robinhood@.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood%{fsname}@.service
 
 %if %{with lustre}
 %post lustre
@@ -271,10 +281,10 @@ install -m 444 scripts/robinhood@.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood@
 %endif
 /sbin/ldconfig
 %if %{defined suse_version}
-%service_add_post robinhood.service robinhood@.service
+%service_add_post robinhood%{fsname}.service robinhood%{fsname}@.service
 %else
-%systemd_post robinhood.service
-%systemd_post robinhood@.service
+%systemd_post robinhood%{fsname}.service
+%systemd_post robinhood%{fsname}@.service
 %endif
 
 %if %{with lustre}
@@ -283,14 +293,14 @@ install -m 444 scripts/robinhood@.service $RPM_BUILD_ROOT/%{_unitdir}/robinhood@
 %preun posix
 %endif
 %if %{defined suse_version}
-%service_del_preun robinhood.service robinhood@.service
+%service_del_preun robinhood%{fsname}.service robinhood%{fsname}@.service
 %else
-%systemd_preun robinhood.service
-%systemd_preun robinhood@.service
+%systemd_preun robinhood%{fsname}.service
+%systemd_preun robinhood%{fsname}@.service
 %endif
 
 
-%else # with_systemd
+%else
 mkdir -p $RPM_BUILD_ROOT/%{_initrddir}
 
 %if %{defined suse_version}
@@ -331,7 +341,7 @@ if [ "$1" = 0 ]; then
     fi
   fi
 fi
-%endif # with_systemd
+%endif
 
 %if %{with lustre}
 %postun lustre
@@ -342,9 +352,9 @@ fi
 
 %if %{with_systemd}
 %if %{defined suse_version}
-%service_del_postun robinhood.service robinhood@.service
+%service_del_postun robinhood%{fsname}.service robinhood%{fsname}@.service
 %else
-%systemd_postun
+%systemd_postun robinhood%{fsname}.service robinhood%{fsname}@.service
 %endif
 %endif
 
@@ -355,7 +365,7 @@ fi
 %else
 %pre posix
 %endif
-%service_add_pre robinhood.service robinhood@.service
+%service_add_pre robinhood%{fsname}.service robinhood%{fsname}@.service
 %endif
 %endif
 
@@ -445,8 +455,8 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/robinhood.d/templates/*.conf
 
 %if %{with_systemd}
-%{_unitdir}/robinhood.service
-%{_unitdir}/robinhood@.service
+%{_unitdir}/robinhood%{fsname}.service
+%{_unitdir}/robinhood%{fsname}@.service
 %else
 %{_initrddir}/robinhood
 %endif
