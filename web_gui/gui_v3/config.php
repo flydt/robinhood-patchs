@@ -18,6 +18,11 @@
 $DEFAULT_DB = "main";
 //Support at least mysql/pgsql/sqlite
 
+$SSL_OPTIONS = array(
+ PDO::MYSQL_ATTR_SSL_CA => '/var/www/robinhood/DigiCertGlobalRootCA.crt.pem',
+ PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+);
+
 $DBA = array();
 
 $DBA[$DEFAULT_DB] = [
@@ -183,7 +188,7 @@ $DB_LASTERROR = "";
 
 foreach ($DBA as $k=>$v) {
     try {
-        $db[$k] = new PDO($DBA[$k]["DB_TYPE"].":host=".$DBA[$k]["DB_HOST"].";dbname=".$DBA[$k]["DB_NAME"], $DBA[$k]["DB_USER"], $DBA[$k]["DB_PASSWD"]);
+        $db[$k] = new PDO($DBA[$k]["DB_TYPE"].":host=".$DBA[$k]["DB_HOST"].";dbname=".$DBA[$k]["DB_NAME"], $DBA[$k]["DB_USER"], $DBA[$k]["DB_PASSWD"], $SSL_OPTIONS);
     	$DBA[$k]["DB_PASSWD"]="****";
 	    $db[$k]->exec("USE ".$DBA[$k]["DB_NAME"].";");
     	$DBA[$k]["DB_STATUS"] = "Ok";
