@@ -1324,6 +1324,7 @@ static cl_status_e cl_get_one(reader_thr_info_t *info, CL_REC_TYPE **pp_rec)
         }
 
         info->nb_reopen++;
+        info->flags |= CHANGELOG_FLAG_EXTRA_FLAGS;
 
         rc = llapi_changelog_start(&info->chglog_hdlr, info->flags,
                                    info->mdtdevice, info->last_read.rec_id + 1);
@@ -1506,7 +1507,8 @@ int cl_reader_start(run_flags_t flags, int mdt_index)
         info->flags =
             ((one_shot
               || cl_reader_config.force_polling) ? 0 : CHANGELOG_FLAG_FOLLOW)
-            | CHANGELOG_FLAG_BLOCK;
+            | CHANGELOG_FLAG_BLOCK
+            | CHANGELOG_FLAG_EXTRA_FLAGS;
 #ifdef HAVE_FLEX_CL
         /* more efficient: avoid structure remapping in liblustreapi */
         info->flags |= CHANGELOG_FLAG_JOBID;
