@@ -219,7 +219,7 @@ static char *get_str_attr(const entry_id_t *id, const attr_set_t *attrs,
 #endif
     else if (attr_index == ATTR_INDEX_creation_time) {
         char *val_str;
-        asprintf(&val_str, "%u", ATTR(attrs, creation_time));
+        if (asprintf(&val_str, "%u", ATTR(attrs, creation_time))) {};
         *free_str = true;
         return val_str;
     } else
