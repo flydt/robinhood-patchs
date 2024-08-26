@@ -87,7 +87,7 @@ BuildRequires: systemd
 #BuildRequires: %{lpackage} >= %{lversion}
 #%else
 #BuildRequires: %{lpackage}
-%endif
+#%endif
 %endif
 %if %{with mysql}
 BuildRequires: /usr/include/mysql/mysql.h
