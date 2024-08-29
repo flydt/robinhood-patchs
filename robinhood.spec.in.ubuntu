@@ -72,8 +72,6 @@ License: CeCILL-C
 Url: http://robinhood.sourceforge.net
 Source0: @PACKAGE@-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-#BuildRequires: glib2-devel >= 2.16
-#BuildRequires: libattr-devel
 %if %{with_systemd}
 %if %{defined suse_version}
 BuildRequires: systemd-rpm-macros
@@ -88,13 +86,6 @@ BuildRequires: systemd
 #%else
 #BuildRequires: %{lpackage}
 #%endif
-%endif
-%if %{with mysql}
-#BuildRequires: /usr/include/mysql/mysql.h
-%endif
-%if %{with jemalloc}
-#BuildRequires: jemalloc
-#BuildRequires: jemalloc-devel
 %endif
 
 %description

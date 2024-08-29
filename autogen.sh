@@ -1,7 +1,14 @@
 #!/bin/bash
-autoreconf --install
 
 wdir=$(dirname $(readlink -m "$0"))
+
+source $wdir/pkgs_precheck.sh
+if [ "$?" -ne 0 ]
+then
+        exit 1
+fi
+
+autoreconf --install
 
 function install_hook
 {
