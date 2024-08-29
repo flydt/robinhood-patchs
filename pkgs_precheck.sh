@@ -47,7 +47,15 @@ then
 		check_deb_pkg $pkg_name
 		if [ "$?" -ne 0 ]
 		then
-			exit 1
+			# install package which not installed
+			apt install $pkg_name -y
+
+			# if failed to install package, quit
+			if [ "$?" -ne 0 ]
+			then
+				echo failed to install $pkg_name
+				exit 1
+			fi
 		fi
 	done
 fi
