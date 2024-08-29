@@ -2,7 +2,7 @@
 
 wdir=$(dirname $(readlink -m "$0"))
 
-source $wdir/pkgs_precheck.sh
+$wdir/pkgs_precheck.sh
 if [ "$?" -ne 0 ]
 then
         exit 1
