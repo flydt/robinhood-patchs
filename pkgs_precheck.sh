@@ -17,7 +17,7 @@ check_deb_pkg() {
 		#
 		# need check further, because 'dpkg -l' command will return 0 if
 		# pkg ever installed but uninstalled now with output as:
-		# 
+		#
 		# un  libglib2.0-dev <none>       <none>       (no description available)
 		#
 		# package installed with output as:
@@ -40,7 +40,7 @@ uname -a | grep ubuntu 1> /dev/null 2>&1
 is_ubuntu=$?
 if [ $is_ubuntu -eq 0 ]
 then
-	pkgs_dep=(libjemalloc-dev libglib2.0-dev mysql-server libmysqlclient-dev bison libattr1-dev)
+	pkgs_dep=(automake autoconf gcc g++ libjemalloc-dev libglib2.0-dev mysql-server libmysqlclient-dev bison libattr1-dev)
 	for pkg_name in ${pkgs_dep[@]};
 	do
 		echo check if \'$pkg_name\' installed
