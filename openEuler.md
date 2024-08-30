@@ -9,7 +9,7 @@ Description:    openEuler release 22.03 (LTS-SP3)
 Release:        22.03
 Codename:       LTS-SP3
 
-# rpm -qa|grep glib2-devel
+# rpm -q glib2-devel
 glib2-devel-2.72.2-15.oe2203sp3.aarch64
 
 make will get error of:
@@ -40,31 +40,11 @@ change:
 
 to:
 
-#if 1
-
 #if    __GNUC__ > 6
 #define G_GNUC_FALLTHROUGH __attribute__((fallthrough))
 #else
 #define G_GNUC_FALLTHROUGH
 #endif /* __GNUC__ */
 
-#else
-
-#if g_macro__has_attribute(fallthrough)
-#define G_GNUC_FALLTHROUGH __attribute__((fallthrough)) \
-  GLIB_AVAILABLE_MACRO_IN_2_60
-#else
-#define G_GNUC_FALLTHROUGH \
-  GLIB_AVAILABLE_MACRO_IN_2_60
-#endif
-
-#endif
-
-I - Ubuntu build
-===========
-
-package name not same as README.md, which is based on RHEL series
-
-apt install libjemalloc-dev libglib2.0-dev mysql-server libmysqlclient-dev bison
 
 
