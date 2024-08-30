@@ -56,7 +56,7 @@ uname -a | grep ubuntu 1> /dev/null 2>&1
 is_ubuntu=$?
 if [ $is_ubuntu -eq 0 ]
 then
-	pkgs_dep=("automake" "autoconf" "gcc" "g++" "libjemalloc-dev" "libglib2.0-dev" "mysql-server" "libmysqlclient-dev" "bison" "libattr1-dev")
+	pkgs_dep=("automake" "autoconf" "make" "gcc" "g++" "libjemalloc-dev" "libglib2.0-dev" "mysql-server" "libmysqlclient-dev" "bison" "libattr1-dev" "libtool-bin" "rpm")
 	for pkg_name in ${pkgs_dep[@]};
 	do
 		echo check if \'$pkg_name\' installed
@@ -79,7 +79,7 @@ else
 	which yum 1> /dev/null 2>&1
 	if [ "$?" -eq 0 ]
 	then
-		pkgs_dep=("automake" "autoconf" "gcc" "gcc-c++" "glib2-devel" "libattr-devel" "mariadb-devel" "bison" "flex")
+		pkgs_dep=("automake" "autoconf" "make" "gcc" "gcc-c++" "glib2-devel" "libattr-devel" "mariadb-devel" "bison" "flex" "libtool" "rpm-build")
 		for pkg_name in ${pkgs_dep[@]};
 		do
 			echo check if \'$pkg_name\' installed

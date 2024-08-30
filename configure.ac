@@ -2,9 +2,9 @@
 # vim:expandtab:shiftwidth=4:tabstop=4:
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.69)
+AC_PREREQ([2.69])
 
-AC_INIT( [robinhood], [3.1.7], [robinhood-support@lists.sourceforge.net])
+AC_INIT([robinhood], [3.1.7], [robinhood-support@lists.sourceforge.net])
 RELEASE="1"
 
 AC_DEFINE_UNQUOTED(RELEASE, "$RELEASE", [release info])
@@ -12,7 +12,7 @@ AC_SUBST(RELEASE)
 
 AC_CONFIG_AUX_DIR([autotools])
 AC_CONFIG_MACRO_DIR([autotools/m4])
-AC_CONFIG_HEADER([src/include/config.h])
+AC_CONFIG_HEADERS([src/include/config.h])
 AC_CONFIG_SRCDIR([src/list_mgr/listmgr_init.c])
 
 AM_INIT_AUTOMAKE([-Wall -Werror tar-pax foreign subdir-objects])
@@ -20,7 +20,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_PREFIX_DEFAULT([/usr])
 
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
 AC_CONFIG_FILES([Makefile
          src/Makefile
@@ -52,11 +52,12 @@ AC_CONFIG_FILES([Makefile
          doc/doxygen/doxygen.cfg])
 
 AC_ARG_ENABLE([dist],
-              AC_HELP_STRING([--enable-dist], [Only configure enough for make dist]),
+              AS_HELP_STRING([--enable-dist], [Only configure enough for make dist]),
               [],
               [enable_dist="no"])
 
-AM_PROG_LEX
+AC_PROG_LEX(noyywrap)
+
 AC_PATH_PROG(LEX_INST, $LEX)
 if test -z "$LEX_INST" -a "x$enable_dist" = xyes; then
   AC_MSG_ERROR([lex/flex not found])
@@ -76,7 +77,7 @@ exit
 # required for automake 1.12 (since fedora 18)
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
-AC_PROG_LIBTOOL
+LT_INIT
 AC_PROG_CC
 
 # required for automake 1.12 (since fedora 18)
@@ -452,8 +453,6 @@ esac
 AC_SUBST(DB_CFLAGS)
 AC_SUBST(DB_LDFLAGS)
 
-# Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([string.h sys/param.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
