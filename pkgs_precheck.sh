@@ -58,6 +58,18 @@ then
 			fi
 		fi
 	done
+else
+	# yum based system, RHEL/almaLinux/CentOS/openEuler
+	which yum 1> /dev/null 2>&1
+	if [ "$?" -ne 0 ]
+		# install all packages which build required
+		yum install automake autoconf gcc gcc-c++ glib2-devel libattr-devel mariadb-devel bison flex
+	else
+		echo -e "\033[31mcannot get os-release\033[0m"
+		echo manual copy robinhood.spec.in.ubuntu or robinhood.spec.in.rhel to robinhood.spec.in
+		rm -f $wdir/robinhood.spec.in 1> /dev/null 2>&1
+		exit 1
+	fi
 fi
 
 wdir=$(dirname $(readlink -m "$0"))
