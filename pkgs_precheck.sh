@@ -4,7 +4,7 @@
 # used to check build packages dependency for ubuntu
 
 check_deb_pkg() {
-	# get deb package name
+	# get package name
 	pkg_name=$1
 
 	dpkg -l $pkg_name 1> /dev/null 2>&1
@@ -36,19 +36,35 @@ check_deb_pkg() {
 	fi
 }
 
+check_rpm_pkg() {
+	# get package name
+	pkg_name=$1
+
+	rpm -q $pkg_name 1> /dev/null 2>&1
+	if [ "$?" -ne 0 ]
+	then
+		echo package \'$pkg_name\' not found
+		echo please run \'sudo yum install $pkg_name\' to install package
+		return 1
+	else
+		echo found package \'$pkg_name\'
+		return 0
+	fi
+}
+
 uname -a | grep ubuntu 1> /dev/null 2>&1
 is_ubuntu=$?
 if [ $is_ubuntu -eq 0 ]
 then
-	pkgs_dep=(automake autoconf gcc g++ libjemalloc-dev libglib2.0-dev mysql-server libmysqlclient-dev bison libattr1-dev)
+	pkgs_dep=("automake" "autoconf" "gcc" "g++" "libjemalloc-dev" "libglib2.0-dev" "mysql-server" "libmysqlclient-dev" "bison" "libattr1-dev")
 	for pkg_name in ${pkgs_dep[@]};
 	do
 		echo check if \'$pkg_name\' installed
-		check_deb_pkg $pkg_name
+		check_deb_pkg "$pkg_name"
 		if [ "$?" -ne 0 ]
 		then
 			# install package which not installed
-			apt install $pkg_name -y
+			apt install "$pkg_name" -y
 
 			# if failed to install package, quit
 			if [ "$?" -ne 0 ]
@@ -61,9 +77,26 @@ then
 else
 	# yum based system, RHEL/almaLinux/CentOS/openEuler
 	which yum 1> /dev/null 2>&1
-	if [ "$?" -ne 0 ]
-		# install all packages which build required
-		yum install automake autoconf gcc gcc-c++ glib2-devel libattr-devel mariadb-devel bison flex
+	if [ "$?" -eq 0 ]
+	then
+		pkgs_dep=("automake" "autoconf" "gcc" "gcc-c++" "glib2-devel" "libattr-devel" "mariadb-devel" "bison" "flex")
+		for pkg_name in ${pkgs_dep[@]};
+		do
+			echo check if \'$pkg_name\' installed
+			check_rpm_pkg "$pkg_name"
+			if [ "$?" -ne 0 ]
+			then
+				# install package which not installed
+				yum install "$pkg_name" -y
+
+				# if failed to install package, quit
+				if [ "$?" -ne 0 ]
+				then
+					echo failed to install $pkg_name
+					exit 1
+				fi
+			fi
+		done
 	else
 		echo -e "\033[31mcannot get os-release\033[0m"
 		echo manual copy robinhood.spec.in.ubuntu or robinhood.spec.in.rhel to robinhood.spec.in
