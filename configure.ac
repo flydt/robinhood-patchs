@@ -2,7 +2,7 @@
 # vim:expandtab:shiftwidth=4:tabstop=4:
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.69)
 
 AC_INIT( [robinhood], [3.1.7], [robinhood-support@lists.sourceforge.net])
 RELEASE="1"
