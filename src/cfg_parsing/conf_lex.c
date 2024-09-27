@@ -2286,7 +2286,7 @@ static void yynoreturn yy_fatal_error (const char* msg )
  */
 int yyget_lineno  (void)
 {
-    
+
     return yylineno;
 }
 
