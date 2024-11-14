@@ -2305,6 +2305,7 @@ static int check_entry(const policy_info_t *policy, lmgr_t *lmgr,
         stat2rbh_attrs(&entry_md, new_attr_set, true);
         updated = true;
 
+#ifdef _LUSTRE
         if (global_config.lustre_projid) {
             /* Lustre project id */
             DisplayLog(LVL_FULL, tag(policy), "Updating lustre projid of "DFID,
@@ -2321,6 +2322,7 @@ static int check_entry(const policy_info_t *policy, lmgr_t *lmgr,
                 ATTR(new_attr_set, projid) = rc;
             }
         }
+#endif
     }
 
     /* get fullpath or name, if they are needed to apply the policy */
