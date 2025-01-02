@@ -52,7 +52,7 @@ check_rpm_pkg() {
 	fi
 }
 
-uname -a | grep ubuntu 1> /dev/null 2>&1
+uname -a | grep -i ubuntu 1> /dev/null 2>&1
 is_ubuntu=$?
 if [ $is_ubuntu -eq 0 ]
 then
