@@ -150,6 +150,14 @@ static inline void check_sort(const lmgr_sort_type_t *p_sort_type,
         || ((p_sort_type->attr_index & ATTR_INDEX_FLG_UNSPEC) != 0))
         return;
 
+    if (p_sort_type->attr_index >= ATTR_COUNT)
+    {
+        DisplayLog(LVL_CRIT, LISTMGR_TAG,
+                    "Invalid attribute index value (%d)",
+                    p_sort_type->attr_index);
+        return;
+    }
+
     /* check sort order */
     if (is_main_field(p_sort_type->attr_index))
         *t_sort = T_MAIN;
