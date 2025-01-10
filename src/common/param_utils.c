@@ -474,7 +474,10 @@ static int build_cmd(const char *name, int begin_idx, int end_idx, void *udata)
             ListMgr_PrintAttrPtr(gs, def->db_type, pval, "");
             val = gs->str;
             free_val = true;
+            #pragma GCC diagnostic push
+            #pragma GCC diagnostic ignored "-Wunused-result"
             g_string_free(gs, FALSE);
+            #pragma GCC diagnostic pop
         } else if (rc == -ENODATA) {
             /* parameter exists but is not set.
              * No previous value was found, use empty string instead.
@@ -552,7 +555,10 @@ char *subst_params(const char *str_in,
 
     /* don't release the string itself (freed by the caller) */
     ret = args.out_str->str;
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-result"
     g_string_free(args.out_str, FALSE);
+    #pragma GCC diagnostic pop
 
     DisplayLog(LVL_FULL, PARAMS_TAG, "'%s'->'%s' in %s", str_in, ret,
                str_descr);
@@ -628,7 +634,10 @@ char *concat_cmd(char **cmd)
     }
 
     out_str = built_command->str;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
     g_string_free(built_command, FALSE);
+#pragma GCC diagnostic pop
 
     return out_str;
 }
