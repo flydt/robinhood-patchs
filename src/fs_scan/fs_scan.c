@@ -852,6 +852,12 @@ static int process_one_entry(thread_scan_info_t *p_info,
         DisplayLog(LVL_MAJOR, FSSCAN_TAG,
                    "failed to stat %s (%s): entry ignored",
                    entry_path, strerror(-rc));
+
+        // qingyun_fu change, terminate by error code when entry not exist
+        if (rc == -ENOENT) {
+            exit(rc);
+        }
+
         return rc;
     }
 
