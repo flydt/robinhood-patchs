@@ -51,7 +51,13 @@ function db_check
     if [ -x /etc/init.d/mysql ]; then
         service=mysql
     fi
-    rpm -q mariadb > /dev/null && service=mariadb
+
+    # code change to make check mariadb method universal, instead of rpm based OS distribution
+    # rpm -q mariadb > /dev/null && service=mariadb
+    if [ -f /usr/lib/systemd/system/mariadb.service ]; then
+        service=mariadb
+    fi
+
     running=0
     echo "Checking service $service..."
     if [ -x /usr/bin/systemctl ]; then
@@ -67,7 +73,7 @@ function db_check
     else
         echo "$service is running"
     fi
-    
+
     if [[ ! -x `which mysql` ]]; then
         echo "Command 'mysql' not found."
         echo "Install 'mysql' or 'mariadb' package on your system."
