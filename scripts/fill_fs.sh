@@ -51,41 +51,38 @@ function mksubtree
     local f
 
     if (( $LVL >= MAX_DEPTH )); then
-        for f in `seq 1 $LEAVES`; do
-	   # pseuso-random file size
-	   sz=$((`random256` % $FILE_KB_MAX))
-       if (( $sz == 0 )); then
-            touch $DIR/file.$f || ( echo "touch ERROR" && exit 1 )
-	   else
-            dd if=/dev/zero of=$DIR/file.$f bs=1k count=$sz 2>/dev/null || ( echo "dd ERROR" && exit 1 )
-	   fi
-	   if (( $? != 0 )); then
-		echo "ERROR $!"
-           fi
+		for f in `seq 1 $LEAVES`; do
+			# pseuso-random file size
+			sz=$((`random256` % $FILE_KB_MAX))
+			if (( $sz == 0 )); then
+				touch $DIR/file.$f || ( echo "touch ERROR" && exit 1 )
+			else
+				dd if=/dev/zero of=$DIR/file.$f bs=1k count=$sz 2>/dev/null || ( echo "dd ERROR" && exit 1 )
+			fi
 
-	   ((TOTAL_FILES=$TOTAL_FILES+1))
+			((TOTAL_FILES=$TOTAL_FILES+1))
 
-        uindex=$(( `random256` % $NB_USERS ))
-        uindex=$(( $uindex + 1 ))
-        owner=`echo $USERS | cut -d " " -f $uindex`
-        chown $owner:$owner $DIR/file.$f
+			uindex=$(( `random256` % $NB_USERS ))
+			uindex=$(( $uindex + 1 ))
+			owner=`echo $USERS | cut -d " " -f $uindex`
+			chown $owner:$owner $DIR/file.$f
 
-	    if (( $(($TOTAL_FILES % 1000)) == 0 )); then
-		[[ -n "$now" ]] && last=$now
-		now=`date +%s.%N`
-		sec=`echo $now - $TIME_START | bc -l | xargs printf "%.2f"`
-		if [[ $last != 0 ]]; then
-			speed=`echo "1000/($now-$last)" | bc -l | xargs printf "%.2f"`
-		else
-			speed=`echo "1000/$sec" | bc -l | xargs printf "%.2f"`
-		fi
+			if (( $(($TOTAL_FILES % 1000)) == 0 )); then
+				[[ -n "$now" ]] && last=$now
+				now=`date +%s.%N`
+				sec=`echo $now - $TIME_START | bc -l | xargs printf "%.2f"`
+				if [[ $last != 0 ]]; then
+					speed=`echo "1000/($now-$last)" | bc -l | xargs printf "%.2f"`
+				else
+					speed=`echo "1000/$sec" | bc -l | xargs printf "%.2f"`
+				fi
 
-		echo "$TOTAL_FILES files created in $sec s ($speed files/sec)"
-	    fi
+				echo "$TOTAL_FILES files created in $sec s ($speed files/sec)"
+			fi
         done
     else
         for d in `seq 1 $SUBDIRS`; do
-	    check_usage || exit 1
+			check_usage || exit 1
             mkdir -p $DIR/dir.$d
             mksubtree $DIR/dir.$d $(( $LVL + 1 ))
         done
@@ -94,6 +91,6 @@ function mksubtree
 
 while (( 1 )); do
 
-     mksubtree $ROOT 1
+	mksubtree $ROOT 1
 
 done
