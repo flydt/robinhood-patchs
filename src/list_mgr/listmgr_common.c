@@ -775,12 +775,7 @@ int attrset2updatelist(lmgr_t *p_mgr, GString *str, const attr_set_t *p_set,
             if (leading_comma || (nbfields > 0))
                 g_string_append(str, ",");
 
-/* fix issue of error: ‘%s’ directive argument is null [-Werror=format-overflow=] */
-/* which found in almaLinux with gcc-toolset-13 */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-overflow"
             g_string_append_printf(str, "%s=", field_name(i));
-#pragma GCC diagnostic pop
 
             if (generic_value)
                 g_string_append_printf(str, "VALUES(%s)", field_name(i));
@@ -1217,17 +1212,11 @@ static void attr2filter_field(GString *str, table_enum table,
 
             print_func_call(str, attr, prefix);
         } else {    /* std field */
-/* fix issue of error: ‘%s’ directive argument is null [-Werror=format-overflow=] */
-/* which found in almaLinux with gcc-toolset-13 */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-overflow"
-
             if (prefix_table)
                 g_string_append_printf(str, "%s.",
                                        table2name(table ==
                                                   T_NONE ? field2table(attr) :
                                                   table));
-#pragma GCC diagnostic pop
 
             g_string_append(str, field_name(attr));
         }
