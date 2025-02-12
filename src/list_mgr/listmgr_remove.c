@@ -63,13 +63,11 @@ static inline void append_table_join(GString *fields, GString *tables, GString *
     else
 /* fix issue of error: ‘%s’ directive argument is null [-Werror=format-overflow=] */
 /* which found in almaLinux with gcc-toolset-13 */
-#if __GNUC__ >= 13
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-overflow"
         g_string_append_printf(tables, " LEFT JOIN %s %s ON %s.id = %s.id",
                                tname, talias, *first_table, talias);
 #pragma GCC diagnostic pop
-#endif
 
     if (GSTRING_EMPTY(where))
         g_string_printf(where, "%s.id="DPK, talias, pk);
