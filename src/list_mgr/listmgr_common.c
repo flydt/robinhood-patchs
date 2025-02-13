@@ -778,10 +778,10 @@ int attrset2updatelist(lmgr_t *p_mgr, GString *str, const attr_set_t *p_set,
             }
 
             const char *field_nm = field_name(i);
-            if (field_nm != NULL)
-                g_string_append_printf(str, "%s=", field_nm);
+            assert(field_nm);
+            g_string_append_printf(str, "%s=", field_nm);
 
-            if ((field_nm != NULL) && generic_value)
+            if (generic_value)
                 g_string_append_printf(str, "VALUES(%s)", field_nm);
             else
                 print_attr_value(p_mgr, str, p_set, i);
