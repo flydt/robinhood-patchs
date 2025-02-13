@@ -773,12 +773,16 @@ int attrset2updatelist(lmgr_t *p_mgr, GString *str, const attr_set_t *p_set,
         if (attr_mask_test_index(&p_set->attr_mask, i)
             && match_table(table, i)) {
             if (leading_comma || (nbfields > 0))
+            {
                 g_string_append(str, ",");
+            }
 
-            g_string_append_printf(str, "%s=", field_name(i));
+            const char *field_nm = field_name(i);
+            if (field_nm != NULL)
+                g_string_append_printf(str, "%s=", field_nm);
 
-            if (generic_value)
-                g_string_append_printf(str, "VALUES(%s)", field_name(i));
+            if ((field_nm != NULL) && generic_value)
+                g_string_append_printf(str, "VALUES(%s)", field_nm);
             else
                 print_attr_value(p_mgr, str, p_set, i);
 

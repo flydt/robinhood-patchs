@@ -61,8 +61,11 @@ static inline void append_table_join(GString *fields, GString *tables, GString *
         g_string_printf(tables, "%s %s", tname, talias);
     }
     else
-        g_string_append_printf(tables, " LEFT JOIN %s %s ON %s.id = %s.id",
-                               tname, talias, *first_table, talias);
+    {
+        if (*first_table != NULL)
+            g_string_append_printf(tables, " LEFT JOIN %s %s ON %s.id = %s.id",
+                                   tname, talias, *first_table, talias);
+    }
 
     if (GSTRING_EMPTY(where))
         g_string_printf(where, "%s.id="DPK, talias, pk);
