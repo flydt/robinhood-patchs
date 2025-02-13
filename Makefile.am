@@ -62,6 +62,7 @@ mydist:
 	TAR_OPTIONS='--owner=0 --group=0 --numeric-owner --mode=u+rw,go+r-ws' $(MAKE) dist-gzip
 
 rpms: robinhood.spec mydist
+	rm -fr $(rpm_dir)/*
 	mkdir -p $(rpm_dir)/BUILD $(rpm_dir)/SPECS $(rpm_dir)/SRPMS $(rpm_dir)/RPMS
 	rpmbuild $(rpmbuild_opt) --define="_topdir $(rpm_dir)" \
 		--define="dbversion $(dbversion)" --define="_prefix $(prefix)" \
@@ -69,6 +70,7 @@ rpms: robinhood.spec mydist
 		-ta $(distdir).tar.gz
 
 rpm: robinhood.spec mydist
+	rm -fr $(rpm_dir)/*
 	mkdir -p $(rpm_dir)/BUILD $(rpm_dir)/SPECS $(rpm_dir)/SRPMS $(rpm_dir)/RPMS
 	rpmbuild $(rpmbuild_opt) --define="_topdir $(rpm_dir)" --define="_prefix $(prefix)" \
 		--define="dbversion $(dbversion)" --define="_sysconfdir @CONFDIR@" \
