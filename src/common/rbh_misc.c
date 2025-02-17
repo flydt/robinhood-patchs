@@ -1037,6 +1037,7 @@ int CheckLastFS(void)
     lmgr_t lmgr;
     char value[1024];
     char str_id[128];
+    bool terminate = false;
 
     rc = ListMgr_InitAccess(&lmgr);
     if (rc) {
@@ -1052,6 +1053,7 @@ int CheckLastFS(void)
             DisplayLog(LVL_CRIT, "CheckFS",
                        "Drop the database and restart the daemon.");
             rc = -1;
+            terminate = true;
         } else {
             DisplayLog(LVL_DEBUG, "CheckFS", "%s matches database content.",
                        global_config.fs_path);
@@ -1072,6 +1074,10 @@ int CheckLastFS(void)
         DisplayLog(LVL_CRIT, "CheckFS",
                    "Error %d retrieving variable 'FS_path'", rc);
     }
+
+    // file system path changed, should not continue
+    if (terminate == true)
+        goto out;
 
     /* can't check root id if not initialized */
     if (fs_key == 0)
