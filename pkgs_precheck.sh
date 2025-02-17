@@ -56,7 +56,7 @@ uname -a | grep -i ubuntu 1> /dev/null 2>&1
 is_ubuntu=$?
 if [ $is_ubuntu -eq 0 ]
 then
-	pkgs_dep=("automake" "autoconf" "make" "gcc" "g++" "libjemalloc-dev" "libglib2.0-dev" "mysql-server" "libmysqlclient-dev" "bison" "libattr1-dev" "libtool-bin" "rpm")
+	pkgs_dep=("automake" "autoconf" "make" "gcc" "g++" "libjemalloc-dev" "libglib2.0-dev" "mariadb-server" "libmariadb-dev" " libmariadb-dev-compat" "bison" "libattr1-dev" "libtool-bin" "rpm")
 	for pkg_name in ${pkgs_dep[@]};
 	do
 		echo check if \'$pkg_name\' installed
