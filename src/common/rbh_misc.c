@@ -1063,16 +1063,19 @@ int CheckLastFS(void)
         DisplayLog(LVL_FULL, "CheckFS", FS_PATH_VAR "='%s'.",
                    global_config.fs_path);
         rc = ListMgr_SetVar(&lmgr, FS_PATH_VAR, global_config.fs_path);
-        if (rc)
+        if (rc) {
             DisplayLog(LVL_CRIT, "CheckFS",
                        "Error %d setting variable 'FS_path'%s", rc,
                        rc ==
                        DB_NOT_EXISTS ?
                        " (likely: database schema is not created yet, and you have a read-only DB access)."
                        : "");
+            terminate = true;
+        }
     } else {
         DisplayLog(LVL_CRIT, "CheckFS",
                    "Error %d retrieving variable 'FS_path'", rc);
+        terminate = true;
     }
 
     // file system path changed, should not continue
