@@ -253,7 +253,8 @@ static void fs_scan_cfg_set_default(void *module_config)
     conf->max_scan_interval = 7 * DAY;
 #endif
     conf->scan_retry_delay = HOUR;
-    conf->nb_threads_scan = 2;
+    //conf->nb_threads_scan = 2;
+    conf->nb_threads_scan = 1;
     conf->scan_op_timeout = 0;
     conf->exit_on_timeout = false;
     conf->spooler_check_interval = MINUTE;

@@ -704,7 +704,7 @@ static void *signal_handler_thr(void *arg)
 #ifdef HAVE_CHANGELOGS
                 if (running_mask & MODULE_MASK_EVENT_HDLR) {
                     /* Ack last changelog records. */
-                    cl_reader_done();
+                    cl_reader_done((options.flags & RUNFLG_NO_GC) != 0);
                 }
 #endif
                 FlushLogs();
@@ -1778,7 +1778,6 @@ int main(int argc, char **argv)
      */
 
     if (!terminate_sig && action_mask & ACTION_MASK_SCAN) {
-
         /* Start FS scan */
         if (options.partial_scan)
             rc = FSScan_Start(options.flags, options.partial_scan_path);
@@ -1851,7 +1850,7 @@ int main(int argc, char **argv)
 #ifdef HAVE_CHANGELOGS
         if (action_mask & ACTION_MASK_HANDLE_EVENTS) {
             /* Ack last changelog records. */
-            cl_reader_done();
+            cl_reader_done((options.flags & RUNFLG_NO_GC) != 0);
         }
 #endif
         running_mask = 0;

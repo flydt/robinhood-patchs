@@ -194,6 +194,8 @@ typedef struct lmgr_t {
     /* operation statistics */
     unsigned int    nbop[OPCOUNT];
 
+    unsigned int    scan_force_recycle;   /*< force recycle records, which not found in FS scan */
+
 } lmgr_t;
 
 /** List manager configuration */

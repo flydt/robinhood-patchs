@@ -1588,7 +1588,7 @@ int cl_reader_wait(void)
 }
 
 /** Release last changelog records, and dump the final stats. */
-int cl_reader_done(void)
+int cl_reader_done(bool changelog_clear)
 {
     lmgr_t lmgr;
     int rc;
@@ -1598,7 +1598,10 @@ int cl_reader_done(void)
         reader_thr_info_t *info = &reader_info[i];
 
         /* Clear the records that are still batched for clearing. */
-        clear_changelog_records(info);
+        if (changelog_clear)
+        {
+            clear_changelog_records(info);
+        }
 
         log_close(info);
     }

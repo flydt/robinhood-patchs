@@ -87,7 +87,7 @@ int cl_reader_terminate(void);
 int cl_reader_wait(void);
 
 /** Release last changelog records, and dump the final stats. */
-int cl_reader_done(void);
+int cl_reader_done(bool changelog_clear);
 
 /** dump changelog processing stats */
 int cl_reader_dump_stats(void);

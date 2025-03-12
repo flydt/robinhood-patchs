@@ -329,6 +329,15 @@ int EntryProcessor_Init(pipeline_flavor_e flavor, run_flags_t flags, void *arg)
 
     for (i = 0; i < entry_proc_conf.nb_thread; i++) {
         worker_params[i].index = i;
+
+        // when FS scan with --force flag, it will force recycle records from NAMES table
+        // without further check if it root dir match with scan dir
+        // don't use it, if you don't know what you want to do
+        // it may lead some records lost, it robinhood_db used by multiple directory
+        // and some file or dir moved from scaned dir to another dir
+        if (pipeline_flags & RUNFLG_FORCE_RUN)
+            worker_params[i].lmgr.scan_force_recycle = 1;
+
         if (pthread_create(&worker_params[i].thread_id,
                            NULL, entry_proc_worker_thr, &worker_params[i]) != 0)
         {

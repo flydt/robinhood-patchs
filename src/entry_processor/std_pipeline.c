@@ -1914,7 +1914,7 @@ int EntryProc_rm_old_entries(struct entry_proc_op_t *p_op, lmgr_t *lmgr)
 
         /* partial scan: remove non-updated entries from a subset of the
          * namespace */
-        if (ATTR_MASK_TEST(&p_op->fs_attrs, fullpath)) {
+        if ((lmgr->scan_force_recycle == 0) && ATTR_MASK_TEST(&p_op->fs_attrs, fullpath)) {
             char tmp[RBH_PATH_MAX];
             strcpy(tmp, ATTR(&p_op->fs_attrs, fullpath));
             strcat(tmp, "/*");
