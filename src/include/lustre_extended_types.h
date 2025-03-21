@@ -124,7 +124,7 @@ struct obd_statfs {
 
 #if HAVE_DECL_CLF_RENAME
 /* Lustre 2.7 */
-#define CL_REC_TYPE struct changelog_rec
+typedef struct changelog_rec CL_REC_TYPE;
 #define HAVE_FLEX_CL    /* Flexible changelogs */
 
 static inline bool rh_is_rename_one_record(const struct changelog_rec *rec)
@@ -143,7 +143,7 @@ static inline char *rh_get_cl_cr_name(const struct changelog_rec *rec)
 
 #elif HAVE_CHANGELOG_EXTEND_REC
 /* Lustre 2.3 to 2.6. */
-#define CL_REC_TYPE struct changelog_ext_rec
+typedef struct changelog_ext_rec CL_REC_TYPE;
 
 static inline bool rh_is_rename_one_record(const struct changelog_ext_rec *rec)
 {
@@ -160,7 +160,7 @@ static inline char *rh_get_cl_cr_name(const struct changelog_ext_rec *rec)
 
 #else
 /* Lustre 2.1 to 2.2 */
-#define CL_REC_TYPE struct changelog_rec
+typedef struct changelog_rec CL_REC_TYPE;
 
 static inline bool rh_is_rename_one_record(const struct changelog_rec *rec)
 {

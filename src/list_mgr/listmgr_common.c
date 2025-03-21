@@ -2148,7 +2148,18 @@ int _lmgr_delayed_retry(lmgr_t *lmgr, int errcode, const char *func, int line)
 
     rh_sleep(lmgr->retry_delay);
     lmgr->retry_count++;
-    return 1;
+
+    // database retry count max limit
+    #define DB_RETRY_LIMIT  10
+
+    if (lmgr->retry_count >= DB_RETRY_LIMIT)
+    {
+        // reaches retry limit, cancel retry
+        lmgr_cancel_retry = true;
+        return 2;
+    } else {
+        return 1;
+    }
 }
 
 /** check attribute mask compatibility for a given table */
