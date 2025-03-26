@@ -2156,6 +2156,9 @@ int _lmgr_delayed_retry(lmgr_t *lmgr, int errcode, const char *func, int line)
     {
         // reaches retry limit, cancel retry
         lmgr_cancel_retry = true;
+        DisplayLog(LVL_DEBUG, LISTMGR_TAG, "Cancel DB retry");
+        rh_sleep(1);
+        exit(SIGTERM);
         return 2;
     } else {
         return 1;
