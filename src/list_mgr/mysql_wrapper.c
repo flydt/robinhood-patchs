@@ -132,6 +132,11 @@ int db_connect(db_conn_t *conn)
     conn->reconnect = 1;
 #endif
 
+    // set connection timeout to prevent hang in mysql_real_connect function call
+    // when remote MySQL server not running
+    unsigned int conn_timeout = 30;
+    mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, (const void *)&conn_timeout);
+
     while (1) {
         /* connect to server */
         if (!mysql_real_connect
