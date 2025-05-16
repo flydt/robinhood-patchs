@@ -31,6 +31,9 @@
 #include <time.h>
 #include <unistd.h>
 
+// when error happend, will set this to true
+bool scan_with_error = false;
+
 /** Indicate if the error code means that the entry is missing */
 static inline bool err_missing(int rc)
 {
@@ -1940,11 +1943,18 @@ int EntryProc_rm_old_entries(struct entry_proc_op_t *p_op, lmgr_t *lmgr)
                        rc, lmgr_err2str(rc));
     }
 
+	if (rc)
+		scan_with_error = true;
+
     /* must call callback function in any case, to unblock the scan */
     if (p_op->callback_func) {
         /* Perform callback to info collector */
         p_op->callback_func(lmgr, p_op, p_op->callback_param);
     }
+
+    if (rc)
+        return rc;
+
     // update last scan end time moved to callback
 
     /* unset force commit flag */

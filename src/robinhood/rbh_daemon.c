@@ -40,6 +40,8 @@
 #include <pthread.h>
 #include <fcntl.h>  /* for open flags */
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #ifdef _LUSTRE
 #include "lustre_extended_types.h"
@@ -1568,6 +1570,17 @@ static int parse_policy_runs(run_item_t **runs, unsigned int *count,
     return 0;
 }
 
+static void handler_sigchld(int sig)
+{
+    pid_t child;
+    do {
+        /* wait for all terminated children
+         * and stop on end of list or error.
+         */
+        child = waitpid(-1, NULL, WNOHANG);
+    } while (child > 0);
+}
+
 /**
  * Main daemon routine
  */
@@ -1772,6 +1785,19 @@ int main(int argc, char **argv)
                        "EntryProcessor successfully initialized");
     }
 
+    /* initialize sigchild handler */
+    struct sigaction act_sigchld;
+    memset(&act_sigchld, 0, sizeof(act_sigchld));
+    act_sigchld.sa_flags = 0;
+    act_sigchld.sa_handler = handler_sigchld;
+    if (sigaction(SIGCHLD, &act_sigchld, NULL) == -1)
+    {
+        DisplayLog(LVL_CRIT, MAIN_TAG,
+                   "ERROR: Could not initialize SIGCHLD handler: %s",
+                   strerror(errno));
+        exit(errno);
+    }
+
     /* Note: in 'one-shot' mode, we must take care of performing action in
      * the correct order:
      * first scan, then process changelogs, then migrate, then purge, etc.
@@ -1802,7 +1828,16 @@ int main(int argc, char **argv)
 
         if (options.flags & RUNFLG_ONCE) {
             FSScan_Wait();
-            DisplayLog(LVL_MAJOR, MAIN_TAG, "FS Scan finished");
+
+            extern bool scan_with_error;
+            if (scan_with_error)
+            {
+                DisplayLog(LVL_CRIT, MAIN_TAG, "Failed to run FS Scan");
+                exit(-EIO);
+            } else {
+                DisplayLog(LVL_MAJOR, MAIN_TAG, "Success to run FS Scan");
+            }
+
             /* Did it finish because of a termination signal?
              * If so, don't continue unless we get the shutdown mutex */
             if (terminate_sig)
