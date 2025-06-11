@@ -549,10 +549,26 @@ static void *stats_thr(void *arg)
 
 #define SIGHDL_TAG  "SigHdlr"
 
+static void *delayed_terminate(void *data)
+{
+    (void)data;
+
+    // delay terminate
+    sleep(20);
+    exit(SIGTERM);
+}
+
 static void terminate_handler(int sig)
 {
+    DisplayLog(LVL_VERB, MAIN_TAG, "Receive SIGTERM signal");
     terminate_sig = sig;
     lmgr_cancel_retry = true;
+
+    pthread_attr_t attr;
+    pthread_t thread = 0;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    (void)pthread_create(&thread, &attr, delayed_terminate, NULL);
 }
 
 static void reload_handler(int sig)
