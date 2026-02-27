@@ -52,9 +52,7 @@ check_rpm_pkg() {
 	fi
 }
 
-uname -a | grep -i ubuntu 1> /dev/null 2>&1
-is_ubuntu=$?
-if [ $is_ubuntu -eq 0 ]
+if [ -f /etc/debian_version ]
 then
 	pkgs_dep=("automake" "autoconf" "make" "gcc" "g++" "libjemalloc-dev" "libglib2.0-dev" "mariadb-server" "libmariadb-dev" " libmariadb-dev-compat" "bison" "libattr1-dev" "libtool-bin" "rpm")
 	for pkg_name in ${pkgs_dep[@]};
@@ -106,7 +104,7 @@ else
 fi
 
 wdir=$(dirname $(readlink -m "$0"))
-if [ $is_ubuntu -eq 0 ]
+if [ -f /etc/debian_version ]
 then
 	# prepare robinhood.spec.in file for build in ubuntu
 	cp $wdir/robinhood.spec.in.ubuntu $wdir/robinhood.spec.in
